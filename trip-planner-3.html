@@ -1,0 +1,1087 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Waypoint</title>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Waypoint">
+<meta name="theme-color" content="#2B1E3D">
+<link rel="apple-touch-icon" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAALQAAAC0CAIAAACyr5FlAAADa0lEQVR4nO3dMXITQRRFUaBYByEJCRugWDs7IGY1BE0JezTPluwZ9e/uczagCa7el5To47cvPz7Ank+9H4C6xEEkDiJxEImDSBxE4iASB5E4iMRBJA4icRCJg0gcROIgEgeROIjEQSQOInEQiYNIHETiIBIHkTiIxEEkDiJxEImDSBxE4iASB5E4iMRBJA4icRCJg0gcROIgEgeROIjEQSQOInEQdYvj959fvV6aG/Vcjt9/fkmkss+9H+D/hHz/+rPvk7BR6DOHIammUByNROrof1Z2uTUVlFuODUPSUfU4Gol0UfSs7HJrHmyM5dgwJI8xZByNRM420lnZ5dacZ+Dl2DAkh5snjkYiBxr+rOxyaw4x23JsGJL3mDyORiJvM+dZ2eXW3GuJ5dgwJDdaMY5GIq9a6KzscmtesO5ybBiSa+J4RiJPrX5Wdrk1jeV4yeJDIo7XLZuIs3KrBW+N5bjbOkMijjdaIRFn5V3mvjWW4xhTDok4jjRZIs7K8aa5NZbjRKMPiThON24izsqDjHhrPn778qP3Mzwz6JvsXkMkUi6OXbMWUzyRMeJIpommZiVjx7Fr3GKqJTJhHMko0dRJZKE4dlUupnslq8eR1ImmYyLiuEPHYrokIo4DPDKaR1YijrOcWsxjEvHz+QFmXQ5x3GG1zxzi2Ofbygdx1IngWvffORaKo3IHT3Vv4mLCOEaJ4FqdLJqx4xi3g41qWTRjxDFNBBs1m7goF8esHWwUz6LpFsciEVwbIoum3HLMaqAmLsRxuhGzaMRxonGzaMRxvNGbuBDHkabJohHHMSbLohHHu0zZxIU43mjuLBpx3G2FLBpx3GqdJi7E8boFs2jE8ZJls2jEsWPxJi7E8YwsnhLHP7K4tnocmnjBunHI4lUrxiGLGy0UhybutUQcsnibyeOQxXvMGYcmDjFbHLI40DxxyOJww8ehifMMHIcszjZkHLJ4jJHi0MSDjRGHLLqoHocsOioahyYqKBeHLOooFIcsqukfhybK6hmHLIrzrwlE/pGaSBxE4iASB5E4iMRBJA4icRCJg0gcROIgEgeROIjEQSQOInEQiYNIHETiIBIHkTiIxEEkDiJxEImDSBxE4iASB5E4iMRBJA4icRCJg0gcROIgEgeROIjEQSQOInEQiYPoL7isu28cF7jNAAAAAABJRU5ErkJggg==">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@500&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+  :root{
+    --bg:#120B1D;
+    --surface:#1E1430;
+    --surface-raised:#281B42;
+    --violet:#A855F7;
+    --violet-dim:#7C3AED;
+    --magenta:#EC4899;
+    --gold:#F5C451;
+    --text:#F3EEFC;
+    --muted:#B6A4DA;
+    --line:#3B2C5B;
+    --line-soft:#2C2045;
+    --danger:#FB6F92;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    min-height:100vh;
+    background:
+      radial-gradient(circle at 12% -8%, rgba(168,85,247,.38), transparent 52%),
+      radial-gradient(circle at 105% 8%, rgba(236,72,153,.22), transparent 48%),
+      radial-gradient(circle at 50% 120%, rgba(245,196,81,.10), transparent 55%),
+      var(--bg);
+    color:var(--text);
+    font-family:'IBM Plex Sans', sans-serif;
+    -webkit-font-smoothing:antialiased;
+    position:relative;
+  }
+  body::before{
+    content:"";
+    position:fixed;
+    inset:0;
+    background-image:url('data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20width%3D%22120%22%20height%3D%22120%22%3E%3Cfilter%20id%3D%22n%22%3E%3CfeTurbulence%20type%3D%22fractalNoise%22%20baseFrequency%3D%220.85%22%20numOctaves%3D%222%22%20stitchTiles%3D%22stitch%22/%3E%3C/filter%3E%3Crect%20width%3D%22100%25%22%20height%3D%22100%25%22%20filter%3D%22url%28%23n%29%22/%3E%3C/svg%3E');
+    opacity:.045;
+    mix-blend-mode:overlay;
+    pointer-events:none;
+    z-index:0;
+  }
+  .app{
+    max-width:760px;
+    margin:0 auto;
+    padding:calc(28px + env(safe-area-inset-top)) 20px calc(80px + env(safe-area-inset-bottom));
+    position:relative;
+    z-index:1;
+  }
+  h1,h2,h3{
+    font-family:'Space Grotesk', sans-serif;
+    font-weight:600;
+    margin:0;
+  }
+  .app-header{
+    display:flex;
+    align-items:flex-end;
+    justify-content:space-between;
+    gap:12px;
+    border-bottom:1.5px solid var(--line);
+    padding-bottom:16px;
+    margin-bottom:26px;
+    flex-wrap:wrap;
+  }
+  .app-header h1{
+    font-size:34px;
+    letter-spacing:-0.01em;
+    background:linear-gradient(100deg, var(--text) 30%, var(--violet) 70%, var(--magenta) 100%);
+    -webkit-background-clip:text;
+    background-clip:text;
+    -webkit-text-fill-color:transparent;
+  }
+  .app-header .note{
+    font-size:12px;
+    color:var(--muted);
+    max-width:220px;
+    text-align:right;
+    line-height:1.4;
+  }
+
+  /* trip switcher */
+  .trip-switcher{
+    display:flex;
+    gap:14px;
+    overflow-x:auto;
+    padding:6px 4px 16px;
+    scrollbar-width:thin;
+  }
+  .trip-switcher::-webkit-scrollbar{ height:6px; }
+  .trip-switcher::-webkit-scrollbar-thumb{ background:var(--violet-dim); border-radius:4px; }
+
+  .trip-stub{
+    position:relative;
+    flex:0 0 auto;
+    width:200px;
+    background:linear-gradient(150deg, var(--surface-raised), var(--surface));
+    border:1.5px solid var(--line);
+    clip-path:polygon(0 0, calc(100% - 16px) 0, 100% 16px, 100% 100%, 0 100%);
+    padding:16px 18px 14px 16px;
+    cursor:pointer;
+    transition:transform .15s ease, box-shadow .15s ease;
+  }
+  .trip-stub::after{
+    content:"";
+    position:absolute;
+    top:0; right:10px; bottom:0;
+    width:0;
+    border-right:2px dashed rgba(182,164,218,.35);
+  }
+  .trip-stub:hover{ transform:translateY(-3px) rotate(-0.6deg); }
+  .trip-stub.active{
+    background:linear-gradient(150deg, var(--violet-dim), #5B21B6);
+    border-color:var(--magenta);
+    box-shadow:0 8px 24px -6px rgba(168,85,247,.55);
+  }
+  .trip-stub.active::after{ border-right-color:rgba(255,255,255,.3); }
+  .trip-stub.active .trip-stub-dest{ color:var(--gold); }
+  .trip-stub-dest{
+    font-family:'Space Grotesk', sans-serif;
+    font-size:19px;
+    font-weight:600;
+    color:var(--violet);
+    margin-bottom:4px;
+  }
+  .trip-stub-name{ font-size:12.5px; color:var(--muted); margin-bottom:10px; }
+  .trip-stub.active .trip-stub-name{ color:rgba(243,238,252,.85); }
+  .trip-stub-dates{
+    font-size:11px;
+    font-family:'IBM Plex Mono', monospace;
+    color:var(--muted);
+    border-top:1px dashed var(--line);
+    padding-top:7px;
+  }
+  .trip-stub.active .trip-stub-dates{ border-top-color:rgba(255,255,255,.25); color:rgba(243,238,252,.75); }
+
+  .add-trip-stub{
+    flex:0 0 auto;
+    width:200px;
+    border:1.5px dashed var(--violet-dim);
+    clip-path:polygon(0 0, calc(100% - 16px) 0, 100% 16px, 100% 100%, 0 100%);
+    background:rgba(168,85,247,.06);
+    color:var(--violet);
+    font-family:'IBM Plex Sans', sans-serif;
+    font-size:14px;
+    font-weight:600;
+    cursor:pointer;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    min-height:94px;
+    transition:background .15s ease, transform .15s ease;
+  }
+  .add-trip-stub:hover{ background:rgba(168,85,247,.14); transform:translateY(-3px); }
+
+  /* add trip form */
+  .card-form{
+    background:var(--surface);
+    border:1px solid var(--line);
+    border-left:4px solid var(--violet);
+    border-radius:2px;
+    padding:20px;
+    margin-bottom:24px;
+  }
+  .card-form h3{ font-size:18px; margin-bottom:14px; }
+  .field-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:10px;
+  }
+  .field{ display:flex; flex-direction:column; gap:5px; margin-bottom:10px; }
+  .field.full{ grid-column:1 / -1; }
+  .field label{ font-size:12px; color:var(--muted); font-weight:500; }
+  .field input, .field select, .field textarea{
+    font-family:'IBM Plex Sans', sans-serif;
+    font-size:14px;
+    padding:9px 11px;
+    border:1px solid var(--line);
+    border-radius:2px;
+    background:var(--bg);
+    color:var(--text);
+  }
+  .field input::placeholder, .field textarea::placeholder{ color:#5C4F7D; }
+  .field input:focus, .field select:focus, .field textarea:focus{
+    outline:2px solid var(--violet);
+    outline-offset:1px;
+  }
+  .form-actions{ display:flex; gap:10px; margin-top:8px; }
+
+  .btn{
+    font-family:'IBM Plex Sans', sans-serif;
+    font-weight:600;
+    font-size:13.5px;
+    padding:10px 18px;
+    clip-path:polygon(8px 0, 100% 0, 100% calc(100% - 8px), calc(100% - 8px) 100%, 0 100%, 0 8px);
+    border:none;
+    background:linear-gradient(120deg, var(--violet), var(--magenta));
+    color:#fff;
+    cursor:pointer;
+    transition:filter .15s ease, transform .15s ease;
+  }
+  .btn:hover{ filter:brightness(1.12); transform:translateY(-1px); }
+  .btn.secondary{
+    background:transparent;
+    color:var(--text);
+    border:1.5px solid var(--line);
+    clip-path:none;
+    border-radius:2px;
+  }
+  .btn.secondary:hover{ border-color:var(--violet); color:var(--violet); }
+  .ghost-btn{
+    background:none;
+    border:none;
+    color:var(--danger);
+    font-size:12.5px;
+    font-family:'IBM Plex Sans', sans-serif;
+    font-weight:500;
+    cursor:pointer;
+    padding:4px 0;
+    text-decoration:underline;
+  }
+
+  /* trip banner */
+  .trip-banner{
+    position:relative;
+    overflow:hidden;
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-start;
+    background:linear-gradient(120deg, var(--surface-raised) 0%, var(--surface) 60%);
+    border:1px solid var(--line);
+    border-radius:2px;
+    padding:22px 24px;
+    margin-bottom:20px;
+    gap:14px;
+  }
+  .trip-banner::before{
+    content:"";
+    position:absolute;
+    top:0; left:0; bottom:0;
+    width:6px;
+    background:linear-gradient(180deg, var(--violet), var(--magenta));
+  }
+  .trip-banner h2{ font-size:27px; color:var(--text); }
+  .trip-banner .dest{ color:var(--gold); font-weight:600; }
+  .trip-banner p{ margin:5px 0 0; font-size:12.5px; color:var(--muted); font-family:'IBM Plex Mono', monospace; }
+  .trip-stamp{
+    position:absolute;
+    top:14px; right:18px;
+    width:66px; height:66px;
+    border:2px dashed var(--gold);
+    border-radius:50%;
+    transform:rotate(-12deg);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    color:var(--gold);
+    font-family:'Space Grotesk', sans-serif;
+    font-size:10.5px;
+    font-weight:600;
+    letter-spacing:.02em;
+    text-align:center;
+    line-height:1.15;
+    flex-direction:column;
+    gap:2px;
+    opacity:.85;
+  }
+  .trip-stamp svg{ width:16px; height:16px; }
+
+  /* tabs */
+  .tabs{
+    display:flex;
+    gap:6px;
+    margin-bottom:20px;
+  }
+  .tab{
+    font-family:'IBM Plex Sans', sans-serif;
+    font-size:13.5px;
+    font-weight:600;
+    background:var(--surface);
+    border:1px solid var(--line);
+    border-bottom:none;
+    clip-path:polygon(10% 0, 90% 0, 100% 100%, 0% 100%);
+    padding:11px 22px 9px;
+    cursor:pointer;
+    color:var(--muted);
+    transition:color .15s ease, background .15s ease;
+  }
+  .tab.active{
+    color:var(--text);
+    background:linear-gradient(150deg, var(--violet-dim), var(--surface-raised));
+  }
+
+  .panel.hidden, .hidden{ display:none !important; }
+
+  .section-head{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:14px;
+  }
+  .section-head h3{ font-size:16px; }
+
+  /* list items styled like tickets */
+  .item-row{
+    background:var(--surface);
+    border:1px solid var(--line);
+    border-left:3px dashed var(--violet-dim);
+    border-radius:2px;
+    padding:14px 16px;
+    margin-bottom:10px;
+    display:flex;
+    justify-content:space-between;
+    gap:12px;
+    align-items:flex-start;
+  }
+  .item-main{ flex:1; min-width:0; }
+  .item-title{ font-weight:600; font-size:14.5px; margin-bottom:2px; }
+  .item-sub{ font-size:12px; color:var(--muted); text-transform:none; }
+  .item-meta{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:11px;
+    color:var(--muted);
+    margin-top:6px;
+  }
+  .item-notes{ font-size:12.5px; margin-top:7px; color:var(--muted); }
+
+  .route-line{ display:flex; align-items:center; gap:5px; margin:8px 0 2px; }
+  .route-dot{ width:7px; height:7px; border-radius:50%; background:var(--violet); flex:0 0 auto; }
+  .route-dot.end{ background:var(--magenta); }
+  .route-dash{ flex:1; height:0; border-top:2px dashed var(--line); position:relative; }
+  .route-plane{ width:16px; height:16px; color:var(--gold); flex:0 0 auto; transform:rotate(2deg); }
+  .route-labels{
+    display:flex;
+    justify-content:space-between;
+    font-family:'Space Grotesk', sans-serif;
+    font-weight:600;
+    font-size:16px;
+    color:var(--text);
+  }
+
+  .day-group{ margin-bottom:18px; }
+  .day-heading{
+    display:inline-block;
+    font-family:'IBM Plex Mono', monospace;
+    font-size:11.5px;
+    color:var(--gold);
+    background:rgba(245,196,81,.08);
+    border:1px dashed rgba(245,196,81,.4);
+    padding:3px 10px;
+    border-radius:2px;
+    margin-bottom:10px;
+  }
+  .todo-row{ display:flex; align-items:flex-start; gap:10px; }
+  .todo-row input[type=checkbox]{ margin-top:3px; width:16px; height:16px; accent-color:var(--magenta); }
+  .todo-row.done{ border-left-color:var(--gold); }
+  .todo-row.done .item-title{ text-decoration:line-through; opacity:.5; }
+
+  .empty-panel{
+    font-size:13.5px;
+    color:var(--muted);
+    padding:20px 4px;
+    border:1px dashed var(--line);
+    border-radius:2px;
+    text-align:center;
+  }
+  .empty-state{
+    text-align:center;
+    padding:60px 20px;
+    color:var(--muted);
+    font-size:15px;
+  }
+  .status-msg{ font-size:13px; color:var(--muted); padding:20px 4px; }
+
+  @media (max-width:480px){
+    .field-grid{ grid-template-columns:1fr; }
+    .app{ padding:20px 14px 70px; }
+    .app-header h1{ font-size:27px; }
+    .app-header .note{ text-align:left; max-width:100%; }
+    .trip-stamp{ width:54px; height:54px; font-size:9px; }
+  }
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="app-header">
+    <h1>Waypoint</h1>
+    <button class="ghost-btn hidden" id="logoutBtn">Sign out</button>
+  </header>
+
+  <div id="loginScreen" class="card-form">
+    <h3>Sign in</h3>
+    <div class="field-grid">
+      <div class="field full">
+        <label for="login-email">Email</label>
+        <input id="login-email" type="email" placeholder="you@example.com" autocomplete="username">
+      </div>
+      <div class="field full">
+        <label for="login-password">Password</label>
+        <input id="login-password" type="password" placeholder="••••••••" autocomplete="current-password">
+      </div>
+    </div>
+    <div class="form-actions">
+      <button class="btn" id="loginBtn">Sign in</button>
+    </div>
+    <p id="loginMsg" class="status-msg" style="display:none;"></p>
+  </div>
+
+  <div id="mainApp" class="hidden">
+    <div id="tripSwitcher" class="trip-switcher"></div>
+
+    <div id="addTripForm" class="card-form hidden">
+      <h3>New trip</h3>
+      <div class="field-grid">
+        <div class="field full">
+          <label for="f-name">Trip name</label>
+          <input id="f-name" type="text" placeholder="e.g. Summer in Portugal">
+        </div>
+        <div class="field full">
+          <label for="f-dest">Destination</label>
+          <input id="f-dest" type="text" placeholder="e.g. Lisbon & the Algarve">
+        </div>
+        <div class="field">
+          <label for="f-start">Start date</label>
+          <input id="f-start" type="date">
+        </div>
+        <div class="field">
+          <label for="f-end">End date</label>
+          <input id="f-end" type="date">
+        </div>
+      </div>
+      <div class="form-actions">
+        <button class="btn" id="saveTripBtn">Create trip</button>
+        <button class="btn secondary" id="cancelTripBtn">Cancel</button>
+      </div>
+    </div>
+
+    <p id="emptyState" class="empty-state hidden">No trips yet. Add your first one above to start planning.</p>
+    <p id="loadingMsg" class="status-msg">Loading your trips…</p>
+
+    <main id="tripMain" class="hidden">
+      <div class="trip-banner">
+        <div class="trip-stamp" id="tripStamp"></div>
+        <div>
+          <h2 id="tripNameEl"></h2>
+          <p id="tripDestDatesEl"></p>
+        </div>
+      </div>
+      <div style="text-align:right; margin:-12px 0 16px;">
+        <button class="ghost-btn" id="deleteTripBtn">Delete trip</button>
+      </div>
+
+      <nav class="tabs">
+        <button class="tab active" data-tab="transport">Transport</button>
+        <button class="tab" data-tab="stays">Stays</button>
+        <button class="tab" data-tab="plan">Plan</button>
+      </nav>
+
+      <section id="panel-transport" class="panel"></section>
+      <section id="panel-stays" class="panel hidden"></section>
+      <section id="panel-plan" class="panel hidden"></section>
+    </main>
+  </div>
+</div>
+
+<script>
+(function(){
+  // ---- Fill these in with your own Supabase project details ----
+  const SUPABASE_URL = 'https://YOUR-PROJECT-REF.supabase.co';
+  const SUPABASE_ANON_KEY = 'YOUR-ANON-PUBLIC-KEY';
+  // ----------------------------------------------------------------
+  const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+  let currentUser = null;
+
+  let trips = [];          // [{id,name,destination,startDate,endDate}]
+  let currentTripId = null;
+  let currentTripData = null; // {info, transport:[], stays:[], itinerary:[]}
+  let activeTab = 'transport';
+
+  const el = id => document.getElementById(id);
+  const uid = () => (crypto.randomUUID ? crypto.randomUUID() : 'id-' + Math.random().toString(36).slice(2));
+
+  function fmtDate(d){
+    if(!d) return '';
+    const dt = new Date(d + 'T00:00:00');
+    if(isNaN(dt)) return d;
+    return dt.toLocaleDateString(undefined, { weekday:'short', day:'numeric', month:'short' });
+  }
+  function fmtDateShort(d){
+    if(!d) return '';
+    const dt = new Date(d + 'T00:00:00');
+    if(isNaN(dt)) return d;
+    return dt.toLocaleDateString(undefined, { day:'numeric', month:'short' });
+  }
+
+  async function storageGet(key){
+    try{
+      const { data, error } = await sb
+        .from('waypoint_data')
+        .select('value')
+        .eq('user_id', currentUser.id)
+        .eq('key', key)
+        .maybeSingle();
+      if(error){ console.error(error); return null; }
+      return data ? data.value : null;
+    }catch(e){
+      console.error('Storage read failed', e);
+      return null;
+    }
+  }
+  async function storageSet(key, value){
+    try{
+      const { error } = await sb.from('waypoint_data').upsert({
+        user_id: currentUser.id,
+        key,
+        value,
+        updated_at: new Date().toISOString()
+      }, { onConflict: 'user_id,key' });
+      if(error) console.error(error);
+    }catch(e){
+      console.error('Storage write failed', e);
+    }
+  }
+  async function storageDelete(key){
+    try{
+      await sb.from('waypoint_data').delete().eq('user_id', currentUser.id).eq('key', key);
+    }catch(e){ /* ignore */ }
+  }
+
+  async function loadTripsIndex(){
+    trips = (await storageGet('trips-index')) || [];
+  }
+  async function saveTripsIndex(){
+    await storageSet('trips-index', trips);
+  }
+  async function loadTripData(tripId){
+    return await storageGet('trip-data:' + tripId);
+  }
+  async function saveTripData(tripId, data){
+    await storageSet('trip-data:' + tripId, data);
+  }
+  async function deleteTripData(tripId){
+    await storageDelete('trip-data:' + tripId);
+  }
+
+  function renderTripSwitcher(){
+    const box = el('tripSwitcher');
+    box.innerHTML = '';
+    trips.forEach(t => {
+      const stub = document.createElement('div');
+      stub.className = 'trip-stub' + (t.id === currentTripId ? ' active' : '');
+      stub.innerHTML = `
+        <div class="trip-stub-dest">${escapeHtml(t.destination || 'Somewhere new')}</div>
+        <div class="trip-stub-name">${escapeHtml(t.name)}</div>
+        <div class="trip-stub-dates">${fmtDateShort(t.startDate)} – ${fmtDateShort(t.endDate)}</div>
+      `;
+      stub.addEventListener('click', () => selectTrip(t.id));
+      box.appendChild(stub);
+    });
+    const addStub = document.createElement('button');
+    addStub.className = 'add-trip-stub';
+    addStub.textContent = '+ New trip';
+    addStub.addEventListener('click', () => {
+      el('addTripForm').classList.remove('hidden');
+      el('f-name').focus();
+    });
+    box.appendChild(addStub);
+  }
+
+  function escapeHtml(s){
+    return String(s == null ? '' : s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  }
+
+  async function selectTrip(tripId){
+    currentTripId = tripId;
+    renderTripSwitcher();
+    el('tripMain').classList.add('hidden');
+    el('loadingMsg').classList.remove('hidden');
+    el('loadingMsg').textContent = 'Loading trip…';
+
+    let data = await loadTripData(tripId);
+    if(!data){
+      const info = trips.find(t => t.id === tripId);
+      data = { info: info || {}, transport: [], stays: [], itinerary: [] };
+      await saveTripData(tripId, data);
+    }
+    currentTripData = data;
+    el('loadingMsg').classList.add('hidden');
+    el('tripMain').classList.remove('hidden');
+    renderTripBanner();
+    renderActivePanel();
+  }
+
+  function destCode(destination){
+    const letters = (destination || 'TRP').replace(/[^a-zA-Z]/g, '').toUpperCase();
+    return (letters.slice(0, 3) || 'TRP').padEnd(3, 'X');
+  }
+
+  function renderTripBanner(){
+    const info = currentTripData.info || {};
+    el('tripNameEl').innerHTML = `${escapeHtml(info.name || '')} <span class="dest">— ${escapeHtml(info.destination || '')}</span>`;
+    el('tripDestDatesEl').textContent = `${fmtDate(info.startDate)}  →  ${fmtDate(info.endDate)}`;
+    el('tripStamp').innerHTML = `
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M2,21 L23,12 L2,3 L2,10 L17,12 L2,14 Z"/></svg>
+      <span>${escapeHtml(destCode(info.destination))}</span>
+    `;
+  }
+
+  function setActiveTab(tab){
+    activeTab = tab;
+    document.querySelectorAll('.tab').forEach(b => b.classList.toggle('active', b.dataset.tab === tab));
+    document.querySelectorAll('.panel').forEach(p => p.classList.add('hidden'));
+    el('panel-' + tab).classList.remove('hidden');
+    renderActivePanel();
+  }
+
+  function renderActivePanel(){
+    if(activeTab === 'transport') renderTransportPanel();
+    else if(activeTab === 'stays') renderStaysPanel();
+    else renderPlanPanel();
+  }
+
+  /* ---------- TRANSPORT ---------- */
+  function renderTransportPanel(){
+    const panel = el('panel-transport');
+    const list = (currentTripData.transport || []).slice().sort((a,b) => (a.date+a.time).localeCompare(b.date+b.time));
+    panel.innerHTML = `
+      <div class="section-head">
+        <h3>Getting there and around</h3>
+        <button class="btn secondary" id="addTransportBtn">+ Add leg</button>
+      </div>
+      <div id="addTransportForm" class="card-form hidden">
+        <div class="field-grid">
+          <div class="field">
+            <label>Type</label>
+            <select id="t-type">
+              <option value="Flight">Flight</option>
+              <option value="Train">Train</option>
+              <option value="Car">Car</option>
+              <option value="Ferry">Ferry</option>
+              <option value="Other">Other</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>Carrier / company</label>
+            <input id="t-carrier" type="text" placeholder="e.g. TAP Air Portugal">
+          </div>
+          <div class="field">
+            <label>From</label>
+            <input id="t-from" type="text" placeholder="e.g. London Heathrow">
+          </div>
+          <div class="field">
+            <label>To</label>
+            <input id="t-to" type="text" placeholder="e.g. Lisbon">
+          </div>
+          <div class="field">
+            <label>Date</label>
+            <input id="t-date" type="date">
+          </div>
+          <div class="field">
+            <label>Time</label>
+            <input id="t-time" type="time">
+          </div>
+          <div class="field">
+            <label>Confirmation code</label>
+            <input id="t-conf" type="text" placeholder="e.g. XR4K9P">
+          </div>
+          <div class="field full">
+            <label>Notes</label>
+            <textarea id="t-notes" rows="2" placeholder="Seat numbers, terminal, luggage allowance…"></textarea>
+          </div>
+        </div>
+        <div class="form-actions">
+          <button class="btn" id="saveTransportBtn">Save leg</button>
+          <button class="btn secondary" id="cancelTransportBtn">Cancel</button>
+        </div>
+      </div>
+      <div id="transportList"></div>
+    `;
+    const listBox = panel.querySelector('#transportList');
+    if(list.length === 0){
+      listBox.innerHTML = '<div class="empty-panel">No transport added yet — add flights, trains or cars above.</div>';
+    } else {
+      list.forEach(leg => {
+        const row = document.createElement('div');
+        row.className = 'item-row';
+        row.innerHTML = `
+          <div class="item-main">
+            <div class="item-sub">${escapeHtml(leg.type)}${leg.carrier ? ' · ' + escapeHtml(leg.carrier) : ''}</div>
+            <div class="route-line">
+              <span class="route-dot"></span>
+              <span class="route-dash"></span>
+              <svg class="route-plane" viewBox="0 0 24 24" fill="currentColor"><path d="M2,21 L23,12 L2,3 L2,10 L17,12 L2,14 Z"/></svg>
+              <span class="route-dash"></span>
+              <span class="route-dot end"></span>
+            </div>
+            <div class="route-labels"><span>${escapeHtml(leg.from)}</span><span>${escapeHtml(leg.to)}</span></div>
+            <div class="item-meta">${fmtDate(leg.date)}${leg.time ? ' · ' + leg.time : ''}${leg.confirmation ? ' · Conf: ' + escapeHtml(leg.confirmation) : ''}</div>
+            ${leg.notes ? `<div class="item-notes">${escapeHtml(leg.notes)}</div>` : ''}
+          </div>
+          <button class="ghost-btn" data-del="${leg.id}">Remove</button>
+        `;
+        listBox.appendChild(row);
+      });
+      listBox.querySelectorAll('[data-del]').forEach(btn => {
+        btn.addEventListener('click', async () => {
+          currentTripData.transport = currentTripData.transport.filter(x => x.id !== btn.dataset.del);
+          await saveTripData(currentTripId, currentTripData);
+          renderTransportPanel();
+        });
+      });
+    }
+
+    panel.querySelector('#addTransportBtn').addEventListener('click', () => {
+      panel.querySelector('#addTransportForm').classList.remove('hidden');
+    });
+    panel.querySelector('#cancelTransportBtn').addEventListener('click', () => {
+      panel.querySelector('#addTransportForm').classList.add('hidden');
+    });
+    panel.querySelector('#saveTransportBtn').addEventListener('click', async () => {
+      const from = panel.querySelector('#t-from').value.trim();
+      const to = panel.querySelector('#t-to').value.trim();
+      const date = panel.querySelector('#t-date').value;
+      if(!from || !to || !date){
+        alert('Please fill in at least from, to and date.');
+        return;
+      }
+      const leg = {
+        id: uid(),
+        type: panel.querySelector('#t-type').value,
+        carrier: panel.querySelector('#t-carrier').value.trim(),
+        from, to, date,
+        time: panel.querySelector('#t-time').value,
+        confirmation: panel.querySelector('#t-conf').value.trim(),
+        notes: panel.querySelector('#t-notes').value.trim()
+      };
+      currentTripData.transport = currentTripData.transport || [];
+      currentTripData.transport.push(leg);
+      await saveTripData(currentTripId, currentTripData);
+      renderTransportPanel();
+    });
+  }
+
+  /* ---------- STAYS ---------- */
+  function renderStaysPanel(){
+    const panel = el('panel-stays');
+    const list = (currentTripData.stays || []).slice().sort((a,b) => (a.checkIn||'').localeCompare(b.checkIn||''));
+    panel.innerHTML = `
+      <div class="section-head">
+        <h3>Places to stay</h3>
+        <button class="btn secondary" id="addStayBtn">+ Add stay</button>
+      </div>
+      <div id="addStayForm" class="card-form hidden">
+        <div class="field-grid">
+          <div class="field full">
+            <label>Hotel / place name</label>
+            <input id="s-name" type="text" placeholder="e.g. Casa Baixa">
+          </div>
+          <div class="field full">
+            <label>Address</label>
+            <input id="s-address" type="text" placeholder="Street, city">
+          </div>
+          <div class="field">
+            <label>Check-in</label>
+            <input id="s-checkin" type="date">
+          </div>
+          <div class="field">
+            <label>Check-out</label>
+            <input id="s-checkout" type="date">
+          </div>
+          <div class="field">
+            <label>Confirmation code</label>
+            <input id="s-conf" type="text" placeholder="e.g. BK-88213">
+          </div>
+          <div class="field">
+            <label>Cost</label>
+            <input id="s-cost" type="text" placeholder="e.g. €340 total">
+          </div>
+          <div class="field full">
+            <label>Notes</label>
+            <textarea id="s-notes" rows="2" placeholder="Room type, check-in instructions…"></textarea>
+          </div>
+        </div>
+        <div class="form-actions">
+          <button class="btn" id="saveStayBtn">Save stay</button>
+          <button class="btn secondary" id="cancelStayBtn">Cancel</button>
+        </div>
+      </div>
+      <div id="staysList"></div>
+    `;
+    const listBox = panel.querySelector('#staysList');
+    if(list.length === 0){
+      listBox.innerHTML = '<div class="empty-panel">No stays added yet — add your hotel or rental above.</div>';
+    } else {
+      list.forEach(stay => {
+        const row = document.createElement('div');
+        row.className = 'item-row';
+        row.innerHTML = `
+          <div class="item-main">
+            <div class="item-title">${escapeHtml(stay.name)}</div>
+            ${stay.address ? `<div class="item-sub">${escapeHtml(stay.address)}</div>` : ''}
+            <div class="item-meta">${fmtDate(stay.checkIn)} → ${fmtDate(stay.checkOut)}${stay.confirmation ? ' · Conf: ' + escapeHtml(stay.confirmation) : ''}${stay.cost ? ' · ' + escapeHtml(stay.cost) : ''}</div>
+            ${stay.notes ? `<div class="item-notes">${escapeHtml(stay.notes)}</div>` : ''}
+          </div>
+          <button class="ghost-btn" data-del="${stay.id}">Remove</button>
+        `;
+        listBox.appendChild(row);
+      });
+      listBox.querySelectorAll('[data-del]').forEach(btn => {
+        btn.addEventListener('click', async () => {
+          currentTripData.stays = currentTripData.stays.filter(x => x.id !== btn.dataset.del);
+          await saveTripData(currentTripId, currentTripData);
+          renderStaysPanel();
+        });
+      });
+    }
+
+    panel.querySelector('#addStayBtn').addEventListener('click', () => {
+      panel.querySelector('#addStayForm').classList.remove('hidden');
+    });
+    panel.querySelector('#cancelStayBtn').addEventListener('click', () => {
+      panel.querySelector('#addStayForm').classList.add('hidden');
+    });
+    panel.querySelector('#saveStayBtn').addEventListener('click', async () => {
+      const name = panel.querySelector('#s-name').value.trim();
+      const checkIn = panel.querySelector('#s-checkin').value;
+      const checkOut = panel.querySelector('#s-checkout').value;
+      if(!name || !checkIn || !checkOut){
+        alert('Please fill in at least the name, check-in and check-out dates.');
+        return;
+      }
+      const stay = {
+        id: uid(),
+        name,
+        address: panel.querySelector('#s-address').value.trim(),
+        checkIn, checkOut,
+        confirmation: panel.querySelector('#s-conf').value.trim(),
+        cost: panel.querySelector('#s-cost').value.trim(),
+        notes: panel.querySelector('#s-notes').value.trim()
+      };
+      currentTripData.stays = currentTripData.stays || [];
+      currentTripData.stays.push(stay);
+      await saveTripData(currentTripId, currentTripData);
+      renderStaysPanel();
+    });
+  }
+
+  /* ---------- PLAN / ITINERARY ---------- */
+  function renderPlanPanel(){
+    const panel = el('panel-plan');
+    const items = (currentTripData.itinerary || []).slice();
+    const byDay = {};
+    items.forEach(it => {
+      const key = it.date || 'No date';
+      byDay[key] = byDay[key] || [];
+      byDay[key].push(it);
+    });
+    const days = Object.keys(byDay).sort();
+
+    panel.innerHTML = `
+      <div class="section-head">
+        <h3>Things to do</h3>
+        <button class="btn secondary" id="addPlanBtn">+ Add item</button>
+      </div>
+      <div id="addPlanForm" class="card-form hidden">
+        <div class="field-grid">
+          <div class="field">
+            <label>Date</label>
+            <input id="p-date" type="date">
+          </div>
+          <div class="field">
+            <label>Time (optional)</label>
+            <input id="p-time" type="time">
+          </div>
+          <div class="field full">
+            <label>What</label>
+            <input id="p-title" type="text" placeholder="e.g. Belém Tower + pastel de nata stop">
+          </div>
+          <div class="field full">
+            <label>Notes</label>
+            <textarea id="p-notes" rows="2" placeholder="Booking link, meeting point, tips…"></textarea>
+          </div>
+        </div>
+        <div class="form-actions">
+          <button class="btn" id="savePlanBtn">Add to plan</button>
+          <button class="btn secondary" id="cancelPlanBtn">Cancel</button>
+        </div>
+      </div>
+      <div id="planList"></div>
+    `;
+    const listBox = panel.querySelector('#planList');
+    if(days.length === 0){
+      listBox.innerHTML = '<div class="empty-panel">Nothing planned yet — add things to see and do above.</div>';
+    } else {
+      days.forEach(day => {
+        const group = document.createElement('div');
+        group.className = 'day-group';
+        const heading = document.createElement('div');
+        heading.className = 'day-heading';
+        heading.textContent = day === 'No date' ? 'No date set' : fmtDate(day);
+        group.appendChild(heading);
+        byDay[day].sort((a,b) => (a.time||'').localeCompare(b.time||'')).forEach(it => {
+          const row = document.createElement('div');
+          row.className = 'item-row todo-row' + (it.done ? ' done' : '');
+          row.innerHTML = `
+            <input type="checkbox" ${it.done ? 'checked' : ''} data-toggle="${it.id}">
+            <div class="item-main">
+              <div class="item-title">${it.time ? `<span class="item-meta">${it.time}</span> ` : ''}${escapeHtml(it.title)}</div>
+              ${it.notes ? `<div class="item-notes">${escapeHtml(it.notes)}</div>` : ''}
+            </div>
+            <button class="ghost-btn" data-del="${it.id}">Remove</button>
+          `;
+          group.appendChild(row);
+        });
+        listBox.appendChild(group);
+      });
+      listBox.querySelectorAll('[data-toggle]').forEach(cb => {
+        cb.addEventListener('change', async () => {
+          const item = currentTripData.itinerary.find(x => x.id === cb.dataset.toggle);
+          if(item){ item.done = cb.checked; }
+          await saveTripData(currentTripId, currentTripData);
+          renderPlanPanel();
+        });
+      });
+      listBox.querySelectorAll('[data-del]').forEach(btn => {
+        btn.addEventListener('click', async () => {
+          currentTripData.itinerary = currentTripData.itinerary.filter(x => x.id !== btn.dataset.del);
+          await saveTripData(currentTripId, currentTripData);
+          renderPlanPanel();
+        });
+      });
+    }
+
+    panel.querySelector('#addPlanBtn').addEventListener('click', () => {
+      panel.querySelector('#addPlanForm').classList.remove('hidden');
+    });
+    panel.querySelector('#cancelPlanBtn').addEventListener('click', () => {
+      panel.querySelector('#addPlanForm').classList.add('hidden');
+    });
+    panel.querySelector('#savePlanBtn').addEventListener('click', async () => {
+      const title = panel.querySelector('#p-title').value.trim();
+      const date = panel.querySelector('#p-date').value;
+      if(!title || !date){
+        alert('Please fill in at least what it is and the date.');
+        return;
+      }
+      const item = {
+        id: uid(),
+        date,
+        time: panel.querySelector('#p-time').value,
+        title,
+        notes: panel.querySelector('#p-notes').value.trim(),
+        done: false
+      };
+      currentTripData.itinerary = currentTripData.itinerary || [];
+      currentTripData.itinerary.push(item);
+      await saveTripData(currentTripId, currentTripData);
+      renderPlanPanel();
+    });
+  }
+
+  /* ---------- APP INIT / TRIP CRUD ---------- */
+  document.querySelectorAll('.tab').forEach(btn => {
+    btn.addEventListener('click', () => setActiveTab(btn.dataset.tab));
+  });
+
+  el('cancelTripBtn').addEventListener('click', () => {
+    el('addTripForm').classList.add('hidden');
+  });
+
+  el('saveTripBtn').addEventListener('click', async () => {
+    const name = el('f-name').value.trim();
+    const destination = el('f-dest').value.trim();
+    const startDate = el('f-start').value;
+    const endDate = el('f-end').value;
+    if(!name || !startDate || !endDate){
+      alert('Please add at least a trip name, start date and end date.');
+      return;
+    }
+    const trip = { id: uid(), name, destination, startDate, endDate };
+    trips.push(trip);
+    await saveTripsIndex();
+    await saveTripData(trip.id, { info: trip, transport: [], stays: [], itinerary: [] });
+    el('f-name').value = ''; el('f-dest').value = ''; el('f-start').value=''; el('f-end').value='';
+    el('addTripForm').classList.add('hidden');
+    el('emptyState').classList.add('hidden');
+    renderTripSwitcher();
+    await selectTrip(trip.id);
+  });
+
+  el('deleteTripBtn').addEventListener('click', async () => {
+    if(!currentTripId) return;
+    const trip = trips.find(t => t.id === currentTripId);
+    if(!confirm(`Delete "${trip ? trip.name : 'this trip'}"? This removes all its transport, stays and plans.`)) return;
+    trips = trips.filter(t => t.id !== currentTripId);
+    await saveTripsIndex();
+    await deleteTripData(currentTripId);
+    currentTripId = null;
+    currentTripData = null;
+    el('tripMain').classList.add('hidden');
+    renderTripSwitcher();
+    if(trips.length === 0){
+      el('emptyState').classList.remove('hidden');
+    } else {
+      await selectTrip(trips[0].id);
+    }
+  });
+
+  async function loadApp(){
+    el('loginScreen').classList.add('hidden');
+    el('mainApp').classList.remove('hidden');
+    el('loadingMsg').classList.remove('hidden');
+    await loadTripsIndex();
+    el('loadingMsg').classList.add('hidden');
+    renderTripSwitcher();
+    if(trips.length === 0){
+      el('emptyState').classList.remove('hidden');
+    } else {
+      await selectTrip(trips[0].id);
+    }
+  }
+
+  function showLoginScreen(message){
+    el('mainApp').classList.add('hidden');
+    el('loginScreen').classList.remove('hidden');
+    el('logoutBtn').classList.add('hidden');
+    const msg = el('loginMsg');
+    if(message){ msg.textContent = message; msg.style.display = ''; }
+    else { msg.style.display = 'none'; }
+  }
+
+  el('loginBtn').addEventListener('click', async () => {
+    const email = el('login-email').value.trim();
+    const password = el('login-password').value;
+    if(!email || !password){
+      showLoginScreen('Enter your email and password.');
+      return;
+    }
+    el('loginBtn').disabled = true;
+    const { data, error } = await sb.auth.signInWithPassword({ email, password });
+    el('loginBtn').disabled = false;
+    if(error){
+      showLoginScreen('Could not sign in — check your email and password.');
+      return;
+    }
+    currentUser = data.user;
+    el('login-password').value = '';
+    el('logoutBtn').classList.remove('hidden');
+    await loadApp();
+  });
+
+  el('logoutBtn').addEventListener('click', async () => {
+    await sb.auth.signOut();
+    currentUser = null;
+    trips = [];
+    currentTripId = null;
+    currentTripData = null;
+    showLoginScreen();
+  });
+
+  async function init(){
+    const { data } = await sb.auth.getSession();
+    if(data.session){
+      currentUser = data.session.user;
+      el('logoutBtn').classList.remove('hidden');
+      await loadApp();
+    } else {
+      showLoginScreen();
+    }
+  }
+  init();
+})();
+</script>
+</body>
+</html>
