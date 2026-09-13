@@ -487,6 +487,42 @@
     color:var(--text);
   }
 
+  .journey-block{
+    border:1px solid var(--violet-dim);
+    border-radius:2px;
+    padding:14px 16px 6px;
+    margin-bottom:14px;
+    background:rgba(168,85,247,.04);
+  }
+  .journey-header{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:11px;
+    text-transform:uppercase;
+    letter-spacing:.05em;
+    color:var(--violet);
+    margin-bottom:10px;
+  }
+  .journey-block .item-row{
+    border-left-style:solid;
+    background:var(--surface);
+  }
+  .connection-chip{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    font-family:'IBM Plex Mono', monospace;
+    font-size:11px;
+    color:var(--gold);
+    padding:6px 4px 6px 20px;
+    margin-bottom:2px;
+  }
+  .connection-chip::before{
+    content:"";
+    width:1px; height:16px;
+    background:var(--line);
+    margin-right:4px;
+  }
+
   .day-group{ margin-bottom:18px; }
   .day-heading{
     display:inline-block;
@@ -541,6 +577,9 @@
     background:linear-gradient(135deg, var(--violet), var(--magenta));
     transform:rotate(-45deg);
     box-shadow:0 0 0 2px rgba(255,255,255,.15);
+  }
+  .map-pin-activity{
+    background:linear-gradient(135deg, var(--gold), #E08A3C);
   }
   .map-popup-title{ font-family:'Space Grotesk', sans-serif; font-weight:600; font-size:14px; margin-bottom:3px; }
   .map-popup-sub{ font-family:'IBM Plex Mono', monospace; font-size:11px; color:var(--muted); }
@@ -610,6 +649,44 @@
     font-size:16px;
     color:var(--gold);
     white-space:nowrap;
+  }
+
+  .compare-card{
+    background:var(--surface);
+    border:1px solid var(--line);
+    border-radius:2px;
+    padding:16px 18px;
+    margin-bottom:20px;
+  }
+  .compare-row{
+    display:grid;
+    grid-template-columns:1.3fr 1fr 1fr 1fr;
+    gap:8px;
+    padding:9px 0;
+    border-bottom:1px dashed var(--line-soft);
+    font-size:13px;
+    align-items:center;
+  }
+  .compare-row:last-child{ border-bottom:none; }
+  .compare-row.header{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:10.5px;
+    text-transform:uppercase;
+    letter-spacing:.04em;
+    color:var(--muted);
+    border-bottom:1px solid var(--line);
+  }
+  .compare-row .name{ font-weight:600; font-family:'Space Grotesk', sans-serif; }
+  .compare-row .positive{ color:var(--gold); font-weight:600; }
+  .compare-row .negative{ color:var(--danger); font-weight:600; }
+  .settle-statement{
+    margin-top:10px;
+    padding-top:12px;
+    border-top:1px solid var(--line);
+    font-family:'Space Grotesk', sans-serif;
+    font-size:15px;
+    font-weight:600;
+    text-align:center;
   }
   .empty-state{
     text-align:center;
@@ -737,10 +814,25 @@
   const COUNTRY_CODES = {"afghanistan":"AF","åland islands":"AX","albania":"AL","algeria":"DZ","american samoa":"AS","andorra":"AD","angola":"AO","anguilla":"AI","antarctica":"AQ","antigua & barbuda":"AG","argentina":"AR","armenia":"AM","aruba":"AW","australia":"AU","austria":"AT","azerbaijan":"AZ","bahamas":"BS","bahrain":"BH","bangladesh":"BD","barbados":"BB","belarus":"BY","belgium":"BE","belize":"BZ","benin":"BJ","bermuda":"BM","bhutan":"BT","bolivia":"BO","bosnia & herzegovina":"BA","botswana":"BW","bouvet island":"BV","brazil":"BR","british indian ocean territory":"IO","british virgin islands":"VG","brunei":"BN","bulgaria":"BG","burkina faso":"BF","burundi":"BI","cambodia":"KH","cameroon":"CM","canada":"CA","cape verde":"CV","caribbean netherlands":"BQ","cayman islands":"KY","central african republic":"CF","chad":"TD","chile":"CL","china":"CN","christmas island":"CX","cocos (keeling) islands":"CC","colombia":"CO","comoros":"KM","congo - brazzaville":"CG","congo - kinshasa":"CD","cook islands":"CK","costa rica":"CR","côte d’ivoire":"CI","croatia":"HR","cuba":"CU","curaçao":"CW","cyprus":"CY","czechia":"CZ","denmark":"DK","djibouti":"DJ","dominica":"DM","dominican republic":"DO","ecuador":"EC","egypt":"EG","el salvador":"SV","equatorial guinea":"GQ","eritrea":"ER","estonia":"EE","eswatini":"SZ","ethiopia":"ET","falkland islands":"FK","faroe islands":"FO","fiji":"FJ","finland":"FI","france":"FR","french guiana":"GF","french polynesia":"PF","french southern territories":"TF","gabon":"GA","gambia":"GM","georgia":"GE","germany":"DE","ghana":"GH","gibraltar":"GI","greece":"GR","greenland":"GL","grenada":"GD","guadeloupe":"GP","guam":"GU","guatemala":"GT","guernsey":"GG","guinea":"GN","guinea-bissau":"GW","guyana":"GY","haiti":"HT","heard & mcdonald islands":"HM","honduras":"HN","hong kong sar china":"HK","hungary":"HU","iceland":"IS","india":"IN","indonesia":"ID","iran":"IR","iraq":"IQ","ireland":"IE","isle of man":"IM","israel":"IL","italy":"IT","jamaica":"JM","japan":"JP","jersey":"JE","jordan":"JO","kazakhstan":"KZ","kenya":"KE","kiribati":"KI","kuwait":"KW","kyrgyzstan":"KG","laos":"LA","latvia":"LV","lebanon":"LB","lesotho":"LS","liberia":"LR","libya":"LY","liechtenstein":"LI","lithuania":"LT","luxembourg":"LU","macao sar china":"MO","madagascar":"MG","malawi":"MW","malaysia":"MY","maldives":"MV","mali":"ML","malta":"MT","marshall islands":"MH","martinique":"MQ","mauritania":"MR","mauritius":"MU","mayotte":"YT","mexico":"MX","micronesia":"FM","moldova":"MD","monaco":"MC","mongolia":"MN","montenegro":"ME","montserrat":"MS","morocco":"MA","mozambique":"MZ","myanmar (burma)":"MM","namibia":"NA","nauru":"NR","nepal":"NP","netherlands":"NL","new caledonia":"NC","new zealand":"NZ","nicaragua":"NI","niger":"NE","nigeria":"NG","niue":"NU","norfolk island":"NF","north korea":"KP","north macedonia":"MK","northern mariana islands":"MP","norway":"NO","oman":"OM","pakistan":"PK","palau":"PW","palestinian territories":"PS","panama":"PA","papua new guinea":"PG","paraguay":"PY","peru":"PE","philippines":"PH","pitcairn islands":"PN","poland":"PL","portugal":"PT","puerto rico":"PR","qatar":"QA","réunion":"RE","romania":"RO","russia":"RU","rwanda":"RW","samoa":"WS","san marino":"SM","são tomé & príncipe":"ST","saudi arabia":"SA","senegal":"SN","serbia":"RS","seychelles":"SC","sierra leone":"SL","singapore":"SG","sint maarten":"SX","slovakia":"SK","slovenia":"SI","solomon islands":"SB","somalia":"SO","south africa":"ZA","south georgia & south sandwich islands":"GS","south korea":"KR","south sudan":"SS","spain":"ES","sri lanka":"LK","st. barthélemy":"BL","st. helena":"SH","st. kitts & nevis":"KN","st. lucia":"LC","st. martin":"MF","st. pierre & miquelon":"PM","st. vincent & grenadines":"VC","sudan":"SD","suriname":"SR","svalbard & jan mayen":"SJ","sweden":"SE","switzerland":"CH","syria":"SY","taiwan":"TW","tajikistan":"TJ","tanzania":"TZ","thailand":"TH","timor-leste":"TL","togo":"TG","tokelau":"TK","tonga":"TO","trinidad & tobago":"TT","tunisia":"TN","turkey":"TR","turkmenistan":"TM","turks & caicos islands":"TC","tuvalu":"TV","u.s. outlying islands":"UM","u.s. virgin islands":"VI","uganda":"UG","ukraine":"UA","united arab emirates":"AE","united kingdom":"GB","united states":"US","uruguay":"UY","uzbekistan":"UZ","vanuatu":"VU","vatican city":"VA","venezuela":"VE","vietnam":"VN","wallis & futuna":"WF","western sahara":"EH","yemen":"YE","zambia":"ZM","zimbabwe":"ZW","usa":"US","united states of america":"US","america":"US","uk":"GB","great britain":"GB","england":"GB","scotland":"GB","wales":"GB","uae":"AE","holland":"NL","korea":"KR","ivory coast":"CI","cote d'ivoire":"CI"};
 
   // Curated flag accent colors [primary, secondary] for popular destinations, by ISO2 code
-  const FLAG_COLORS = {"PT":["#D4262C","#046A38"],"ES":["#AA151B","#F1BF00"],"FR":["#0055A4","#EF4135"],"IT":["#008C45","#CD212A"],"GB":["#012169","#C8102E"],"US":["#3C3B6E","#B22234"],"DE":["#000000","#FFCE00"],"NL":["#AE1C28","#21468B"],"BE":["#000000","#FFD90C"],"IE":["#169B62","#FF883E"],"GR":["#0D5EAF","#FFFFFF"],"TR":["#E30A17","#FFFFFF"],"JP":["#BC002D","#FFFFFF"],"KR":["#003478","#C60C30"],"CN":["#DE2910","#FFDE00"],"TH":["#241D4F","#ED1C24"],"VN":["#DA251D","#FFFF00"],"ID":["#FF0000","#FFFFFF"],"IN":["#FF9933","#138808"],"AE":["#00732F","#FF0000"],"EG":["#CE1126","#000000"],"MA":["#C1272D","#006233"],"ZA":["#007A4D","#DE3831"],"AU":["#00008B","#FF0000"],"NZ":["#00247D","#CC142B"],"CA":["#FF0000","#FFFFFF"],"MX":["#006847","#CE1126"],"BR":["#009739","#FEDD00"],"AR":["#74ACDF","#F6B40E"],"CL":["#0033A0","#D52B1E"],"PE":["#D91023","#FFFFFF"],"CO":["#FCD116","#003893"],"CH":["#FF0000","#FFFFFF"],"AT":["#ED2939","#FFFFFF"],"SE":["#005293","#FECC00"],"NO":["#BA0C2F","#00205B"],"DK":["#C60C30","#FFFFFF"],"FI":["#003580","#FFFFFF"],"IS":["#02529C","#DC1E35"],"PL":["#DC143C","#FFFFFF"],"CZ":["#11457E","#D7141A"],"HU":["#436F4D","#CD2A3E"],"HR":["#171796","#FF0000"],"MT":["#CF142B","#FFFFFF"],"CY":["#D57800","#4E5B31"],"IL":["#0038B8","#FFFFFF"],"JO":["#007A3D","#CE1126"],"PH":["#0038A8","#CE1126"],"MY":["#010066","#CC0001"],"SG":["#EF3340","#FFFFFF"]};
+  const FLAG_COLORS = {"PT":["#D4262C","#046A38"],"ES":["#AA151B","#F1BF00"],"FR":["#0055A4","#EF4135"],"IT":["#008C45","#CD212A"],"GB":["#012169","#C8102E"],"US":["#3C3B6E","#B22234"],"DE":["#000000","#FFCE00"],"NL":["#AE1C28","#21468B"],"BE":["#000000","#FFD90C"],"IE":["#169B62","#FF883E"],"GR":["#0D5EAF","#FFFFFF"],"TR":["#E30A17","#FFFFFF"],"JP":["#BC002D","#FFFFFF"],"KR":["#003478","#C60C30"],"CN":["#DE2910","#FFDE00"],"TH":["#241D4F","#ED1C24"],"VN":["#DA251D","#FFFF00"],"ID":["#FF0000","#FFFFFF"],"IN":["#FF9933","#138808"],"AE":["#00732F","#FF0000"],"EG":["#CE1126","#000000"],"MA":["#C1272D","#006233"],"ZA":["#007A4D","#DE3831"],"AU":["#00008B","#FF0000"],"NZ":["#00247D","#CC142B"],"CA":["#FF0000","#FFFFFF"],"MX":["#006847","#CE1126"],"BR":["#009739","#FEDD00"],"AR":["#74ACDF","#F6B40E"],"CL":["#0033A0","#D52B1E"],"PE":["#D91023","#FFFFFF"],"CO":["#FCD116","#003893"],"CH":["#FF0000","#FFFFFF"],"AT":["#ED2939","#FFFFFF"],"SE":["#005293","#FECC00"],"NO":["#BA0C2F","#00205B"],"DK":["#C60C30","#FFFFFF"],"FI":["#003580","#FFFFFF"],"IS":["#02529C","#DC1E35"],"PL":["#DC143C","#FFFFFF"],"CZ":["#11457E","#D7141A"],"HU":["#436F4D","#CD2A3E"],"HR":["#171796","#FF0000"],"MT":["#CF142B","#FFFFFF"],"CY":["#D57800","#4E5B31"],"IL":["#0038B8","#FFFFFF"],"JO":["#007A3D","#CE1126"],"PH":["#0038A8","#CE1126"],"MY":["#010066","#CC0001"],"SG":["#EF3340","#FFFFFF"],"HK":["#DE2910","#FFFFFF"]};
 
   // Landmark silhouette SVG shapes for a curated set of countries, by ISO2 code
   const LANDMARKS = {
+    TH: `<path d="M70,190 L130,190 L125,160 L75,160 Z"/><path d="M78,160 L122,160 L118,135 L82,135 Z"/><path d="M85,135 L115,135 L112,110 L88,110 Z"/><path d="M92,110 L108,110 L105,85 L95,85 Z"/><polygon points="97,85 100,50 103,85"/>`,
+    HK: `<rect x="20" y="140" width="20" height="50"/><rect x="45" y="110" width="18" height="80"/><rect x="68" y="70" width="16" height="120"/><polygon points="68,70 76,55 84,70"/><rect x="89" y="130" width="20" height="60"/><rect x="114" y="95" width="18" height="95"/><rect x="137" y="150" width="20" height="40"/><rect x="162" y="120" width="18" height="70"/>`,
+    ES: `<polygon points="60,190 66,100 72,190"/><polygon points="80,190 88,70 96,190"/><polygon points="104,190 112,50 120,190"/><polygon points="128,190 136,80 144,190"/>`,
+    PT: `<rect x="82" y="80" width="36" height="110"/><path d="M82,80 A18,20 0 0 1 118,80 Z"/><rect x="90" y="60" width="20" height="22"/><polygon points="90,60 100,45 110,60"/>`,
+    NL: `<path d="M88,190 L84,110 L116,110 L112,190 Z"/><circle cx="100" cy="105" r="10"/><polygon points="100,105 55,60 63,52 100,95"/><polygon points="100,105 145,60 137,52 100,95"/><polygon points="100,105 55,150 63,158 100,115"/><polygon points="100,105 145,150 137,158 100,115"/>`,
+    MX: `<path d="M40,190 L160,190 L150,170 L50,170 Z"/><path d="M50,170 L150,170 L142,150 L58,150 Z"/><path d="M58,150 L142,150 L134,130 L66,130 Z"/><path d="M66,130 L134,130 L126,110 L74,110 Z"/><path d="M74,110 L126,110 L118,90 L82,90 Z"/><rect x="92" y="72" width="16" height="18"/>`,
+    ID: `<path d="M20,190 L20,140 L45,140 L45,120 L65,120 L65,100 L80,100 L80,190 Z"/><path d="M180,190 L180,140 L155,140 L155,120 L135,120 L135,100 L120,100 L120,190 Z"/>`,
+    VN: `<path d="M10,190 L10,150 L25,120 L35,150 L45,100 L55,150 L70,110 L80,150 L95,90 L105,150 L120,130 L130,150 L130,190 Z"/>`,
+    AE: `<polygon points="95,190 98,20 101,20 104,190"/><rect x="92" y="120" width="16" height="4"/><rect x="94" y="80" width="12" height="4"/>`,
+    TR: `<rect x="70" y="120" width="60" height="70"/><path d="M70,120 A30,25 0 0 1 130,120 Z"/><rect x="35" y="70" width="8" height="120"/><polygon points="35,70 39,55 43,70"/><rect x="157" y="70" width="8" height="120"/><polygon points="157,70 161,55 165,70"/>`,
+    KR: `<rect x="95" y="120" width="10" height="70"/><ellipse cx="100" cy="110" rx="18" ry="14"/><polygon points="90,96 100,50 110,96"/>`,
+    CH: `<polygon points="60,190 100,50 140,190 115,190 100,140 85,190"/>`,
+    CA: `<rect x="96" y="150" width="8" height="40"/><ellipse cx="100" cy="140" rx="14" ry="18"/><rect x="98" y="60" width="4" height="80"/><polygon points="96,60 100,40 104,60"/>`,
+    SG: `<rect x="50" y="90" width="18" height="100"/><rect x="91" y="90" width="18" height="100"/><rect x="132" y="90" width="18" height="100"/><path d="M45,95 L173,95 L163,75 L55,75 Z"/>`,
+    MA: `<rect x="80" y="60" width="40" height="130"/><rect x="85" y="90" width="30" height="4"/><rect x="85" y="120" width="30" height="4"/><rect x="85" y="150" width="30" height="4"/><polygon points="80,60 100,35 120,60"/>`,
     FR: `<polygon points="100,10 108,70 96,70"/><polygon points="82,190 100,70 118,190 100,175"/><rect x="70" y="150" width="60" height="8"/><rect x="80" y="110" width="40" height="6"/>`,
     GB: `<rect x="82" y="55" width="36" height="135"/><polygon points="82,55 100,15 118,55"/><circle cx="100" cy="90" r="12" fill="#120B1D"/><rect x="70" y="185" width="60" height="6"/>`,
     US: `<rect x="80" y="165" width="40" height="25"/><path d="M85,165 C85,120 78,90 100,60 C122,90 115,120 115,165 Z"/><rect x="112" y="45" width="7" height="35"/><path d="M119,45 C130,45 130,58 119,58 Z"/><polygon points="97,40 100,25 103,40"/>`,
@@ -1101,8 +1193,8 @@
     if(transport.length){
       html += `<h2>Transport</h2>`;
       transport.slice().sort((a,b) => (a.date+a.time).localeCompare(b.date+b.time)).forEach(leg => {
-        html += `<div class="p-row"><strong>${escapeHtml(leg.fromCode || leg.from)} → ${escapeHtml(leg.toCode || leg.to)}</strong> — ${escapeHtml(leg.type)}${leg.carrier ? ' · ' + escapeHtml(leg.carrier) : ''}<br>
-          <span class="p-meta">${fmtDate(leg.date)}${leg.time ? ' · ' + leg.time : ''}${leg.confirmation ? ' · Confirmation: ' + escapeHtml(leg.confirmation) : ''}</span></div>`;
+        html += `<div class="p-row">${leg.journey ? '<span class="p-meta">' + escapeHtml(leg.journey) + '</span><br>' : ''}<strong>${escapeHtml(leg.fromCode || leg.from)} → ${escapeHtml(leg.toCode || leg.to)}</strong> — ${escapeHtml(leg.type)}${leg.carrier ? ' · ' + escapeHtml(leg.carrier) : ''}<br>
+          <span class="p-meta">${fmtDate(leg.date)} · Depart ${leg.time || '—'}${leg.arriveTime ? ' · Arrive ' + leg.arriveTime : ''}${leg.confirmation ? ' · Confirmation: ' + escapeHtml(leg.confirmation) : ''}</span></div>`;
       });
     }
 
@@ -1207,7 +1299,7 @@
         date: leg.date, time: leg.time || '',
         kind: leg.type || 'Transport',
         title: `${leg.fromCode || leg.from} → ${leg.toCode || leg.to}`,
-        sub: leg.carrier || ''
+        sub: [leg.carrier, leg.arriveTime ? 'Arrives ' + leg.arriveTime : ''].filter(Boolean).join(' · ')
       });
     });
     (tripData.stays || []).forEach(stay => {
@@ -1238,7 +1330,7 @@
     });
     const days = Object.keys(byDay).sort();
 
-    panel.innerHTML = `<div class="section-head"><h3>Full trip timeline</h3></div><div id="timelineList"></div>`;
+    panel.innerHTML = `<div class="section-head"><h3>Full trip timeline</h3></div><p class="item-meta" id="weatherStatus" style="margin-bottom:12px;"></p><div id="timelineList"></div>`;
     const list = panel.querySelector('#timelineList');
     days.forEach(day => {
       const group = document.createElement('div');
@@ -1260,16 +1352,36 @@
     });
 
     if(info.destination){
-      const coords = await ensureDestCoords();
-      if(coords){
-        const weatherMap = await fetchWeatherRange(coords.lat, coords.lng, info.startDate, info.endDate);
-        Object.keys(weatherMap).forEach(date => {
-          const chip = panel.querySelector(`[data-weather-day="${date}"]`);
-          if(chip){
-            const w = weatherMap[date];
-            chip.textContent = weatherLabel(w.code, w.max, w.min);
+      const today = new Date(); today.setHours(0,0,0,0);
+      const tripStart = info.startDate ? new Date(info.startDate + 'T00:00:00') : null;
+      const tripEnd = info.endDate ? new Date(info.endDate + 'T00:00:00') : null;
+      const daysUntilStart = tripStart ? Math.round((tripStart - today) / 86400000) : null;
+      const statusEl = el('weatherStatus');
+
+      if(tripEnd && tripEnd < today){
+        statusEl.textContent = '';
+      } else if(daysUntilStart != null && daysUntilStart > 15){
+        statusEl.textContent = `Weather forecast opens up 15 days before your trip (currently ${daysUntilStart} days away).`;
+      } else {
+        statusEl.textContent = 'Checking the forecast…';
+        const coords = await ensureDestCoords();
+        if(!coords){
+          statusEl.textContent = "Couldn't find a location to check weather for — check the country/city spelling on your first stop.";
+        } else {
+          const weatherMap = await fetchWeatherRange(coords.lat, coords.lng, info.startDate, info.endDate);
+          if(Object.keys(weatherMap).length === 0){
+            statusEl.textContent = 'No forecast data available right now — try again shortly.';
+          } else {
+            statusEl.textContent = '';
+            Object.keys(weatherMap).forEach(date => {
+              const chip = panel.querySelector(`[data-weather-day="${date}"]`);
+              if(chip){
+                const w = weatherMap[date];
+                chip.textContent = weatherLabel(w.code, w.max, w.min);
+              }
+            });
           }
-        });
+        }
       }
     }
   }
@@ -1293,15 +1405,20 @@
 
   async function renderMapPanel(){
     const panel = el('panel-map');
-    const stays = (currentTripData.stays || []);
+    const stays = (currentTripData.stays || []).filter(s => s.address);
+    const activities = (currentTripData.itinerary || []).filter(i => i.address);
+    const places = [
+      ...stays.map(s => ({ kind: 'stay', name: s.name, address: s.address, ref: s })),
+      ...activities.map(a => ({ kind: 'activity', name: a.title, address: a.address, ref: a }))
+    ];
 
-    if(stays.length === 0){
-      panel.innerHTML = '<div class="empty-panel">Add a stay with an address to see it on the map.</div>';
+    if(places.length === 0){
+      panel.innerHTML = '<div class="empty-panel">Add an address to a stay or a plan item to see it on the map.</div>';
       return;
     }
 
     panel.innerHTML = `
-      <div class="section-head"><h3>Where you're staying</h3></div>
+      <div class="section-head"><h3>On the map</h3></div>
       <div id="mapContainer"></div>
       <p class="item-meta" id="mapStatus" style="margin-top:10px;"></p>
     `;
@@ -1314,20 +1431,20 @@
     }).addTo(leafletMap);
 
     const statusEl = el('mapStatus');
-    const pinIcon = L.divIcon({ className: 'map-pin', iconSize:[16,16], iconAnchor:[8,16] });
+    const stayIcon = L.divIcon({ className: 'map-pin', iconSize:[16,16], iconAnchor:[8,16] });
+    const activityIcon = L.divIcon({ className: 'map-pin map-pin-activity', iconSize:[16,16], iconAnchor:[8,16] });
     const points = [];
     let geocodedAny = false;
 
-    for(const stay of stays){
-      if(!stay.address){ continue; }
-      let coords = (stay.lat != null && stay.lng != null) ? { lat: stay.lat, lng: stay.lng } : null;
+    for(const place of places){
+      let coords = (place.ref.lat != null && place.ref.lng != null) ? { lat: place.ref.lat, lng: place.ref.lng } : null;
 
       if(!coords){
-        if(statusEl) statusEl.textContent = `Locating ${stay.name}…`;
-        coords = await geocodeAddress(stay.address);
+        if(statusEl) statusEl.textContent = `Locating ${place.name}…`;
+        coords = await geocodeAddress(place.address);
         if(coords){
-          stay.lat = coords.lat;
-          stay.lng = coords.lng;
+          place.ref.lat = coords.lat;
+          place.ref.lng = coords.lng;
           geocodedAny = true;
         }
         await new Promise(r => setTimeout(r, 1000)); // be polite to the free geocoding service
@@ -1335,15 +1452,15 @@
 
       if(coords){
         points.push(coords);
-        L.marker([coords.lat, coords.lng], { icon: pinIcon }).addTo(leafletMap).bindPopup(
-          `<div class="map-popup-title">${escapeHtml(stay.name)}</div><div class="map-popup-sub">${escapeHtml(stay.address)}</div>`
+        L.marker([coords.lat, coords.lng], { icon: place.kind === 'stay' ? stayIcon : activityIcon }).addTo(leafletMap).bindPopup(
+          `<div class="map-popup-title">${escapeHtml(place.name)}</div><div class="map-popup-sub">${place.kind === 'stay' ? 'Stay' : 'Activity'} · ${escapeHtml(place.address)}</div>`
         );
       }
     }
 
     if(statusEl) statusEl.textContent = points.length
-      ? `Showing ${points.length} of ${stays.length} stay${stays.length === 1 ? '' : 's'} on the map.`
-      : 'Could not locate any of your stay addresses — double check they\'re spelled clearly.';
+      ? `Showing ${points.length} of ${places.length} place${places.length === 1 ? '' : 's'} on the map.`
+      : 'Could not locate any of these addresses — double check they\'re spelled clearly.';
 
     if(points.length){
       leafletMap.fitBounds(points.map(p => [p.lat, p.lng]), { padding:[30,30], maxZoom:14 });
@@ -1411,20 +1528,20 @@
     const fairShare = payers.length ? total / payers.length : 0;
     const balances = payers.map(p => ({ name: p, paid: byPayer[p] || 0, net: (byPayer[p] || 0) - fairShare }));
 
-    let settleHtml = '';
-    if(payers.length === 2 && conversionOk){
+    let settleStatement = '';
+    if(!conversionOk){
+      settleStatement = 'Balances unavailable — exchange rates could not be loaded.';
+    } else if(payers.length === 2){
       const [a, b] = balances;
       if(Math.abs(a.net) > 0.01){
         const ower = a.net < 0 ? a : b;
         const owed = a.net < 0 ? b : a;
-        settleHtml = `<div class="budget-chip">${escapeHtml(ower.name)} owes ${escapeHtml(owed.name)} ${Math.abs(a.net).toFixed(2)} ${SETTLE_CURRENCY}</div>`;
+        settleStatement = `${ower.name} owes ${owed.name} ${Math.abs(a.net).toFixed(2)} ${SETTLE_CURRENCY}`;
       } else {
-        settleHtml = `<div class="budget-chip">All settled up</div>`;
+        settleStatement = 'All settled up';
       }
-    } else if(payers.length > 2 && conversionOk){
-      settleHtml = balances.map(b =>
-        `<div class="budget-chip">${escapeHtml(b.name)} ${b.net >= 0 ? 'is owed' : 'owes'} ${Math.abs(b.net).toFixed(2)} ${SETTLE_CURRENCY}</div>`
-      ).join('');
+    } else if(payers.length > 2){
+      settleStatement = balances.map(b => `${b.name} ${b.net >= 0 ? 'is owed' : 'owes'} ${Math.abs(b.net).toFixed(2)}`).join(' · ') + ` ${SETTLE_CURRENCY}`;
     }
 
     panel.innerHTML = `
@@ -1438,8 +1555,19 @@
       </div>
       ${payers.length > 0 ? `
         <div class="section-head"><h3>Who owes what</h3></div>
-        <div class="budget-breakdown" style="margin-bottom:20px;">
-          ${settleHtml || '<span class="budget-chip">Add a payer to each expense to see balances</span>'}
+        <div class="compare-card">
+          <div class="compare-row header">
+            <span>Person</span><span>Paid (${SETTLE_CURRENCY})</span><span>Fair share</span><span>Balance</span>
+          </div>
+          ${balances.map(b => `
+            <div class="compare-row">
+              <span class="name">${escapeHtml(b.name)}</span>
+              <span>${b.paid.toFixed(2)}</span>
+              <span>${fairShare.toFixed(2)}</span>
+              <span class="${b.net >= 0 ? 'positive' : 'negative'}">${b.net >= 0 ? '+' : '−'}${Math.abs(b.net).toFixed(2)}</span>
+            </div>
+          `).join('')}
+          <div class="settle-statement">${escapeHtml(settleStatement)}</div>
         </div>
       ` : ''}
       <div class="section-head">
@@ -1580,12 +1708,21 @@
             <input id="t-date" type="date">
           </div>
           <div class="field">
-            <label>Time</label>
+            <label>Departure time</label>
             <input id="t-time" type="time">
+          </div>
+          <div class="field">
+            <label>Arrival time</label>
+            <input id="t-arrive-time" type="time">
           </div>
           <div class="field">
             <label>Confirmation code</label>
             <input id="t-conf" type="text" placeholder="e.g. XR4K9P">
+          </div>
+          <div class="field full">
+            <label>Part of a journey? (optional)</label>
+            <input id="t-journey" type="text" placeholder="e.g. Outbound to Bangkok" list="journeyOptions" autocomplete="off">
+            <datalist id="journeyOptions"></datalist>
           </div>
           <div class="field full">
             <label>Notes</label>
@@ -1603,34 +1740,81 @@
     if(list.length === 0){
       listBox.innerHTML = '<div class="empty-panel">No transport added yet — add flights, trains or cars above.</div>';
     } else {
-      list.forEach(leg => {
-        const row = document.createElement('div');
-        row.className = 'item-row';
-        row.innerHTML = `
-          <div class="item-main">
-            <div class="item-sub">${escapeHtml(leg.type)}${leg.carrier ? ' · ' + escapeHtml(leg.carrier) : ''}</div>
-            <div class="route-line">
-              <span class="route-dot"></span>
-              <span class="route-dash"></span>
-              <svg class="route-plane" viewBox="0 0 24 24" fill="currentColor"><path d="M2,21 L23,12 L2,3 L2,10 L17,12 L2,14 Z"/></svg>
-              <span class="route-dash"></span>
-              <span class="route-dot end"></span>
-            </div>
-            <div class="route-labels">
-              <span class="route-code">${escapeHtml(leg.fromCode || leg.from || '')}</span>
-              <span class="route-code">${escapeHtml(leg.toCode || leg.to || '')}</span>
-            </div>
-            <div class="item-sub" style="display:flex; justify-content:space-between;">
-              <span>${escapeHtml([leg.fromCity, leg.fromCountry].filter(Boolean).join(', ') || leg.from || '')}</span>
-              <span>${escapeHtml([leg.toCity, leg.toCountry].filter(Boolean).join(', ') || leg.to || '')}</span>
-            </div>
-            <div class="item-meta">${fmtDate(leg.date)}${leg.time ? ' · ' + leg.time : ''}${leg.confirmation ? ' · Conf: ' + escapeHtml(leg.confirmation) : ''}</div>
-            ${leg.notes ? `<div class="item-notes">${escapeHtml(leg.notes)}</div>` : ''}
+      const legRowHtml = leg => `
+        <div class="item-main">
+          <div class="item-sub">${escapeHtml(leg.type)}${leg.carrier ? ' · ' + escapeHtml(leg.carrier) : ''}</div>
+          <div class="route-line">
+            <span class="route-dot"></span>
+            <span class="route-dash"></span>
+            <svg class="route-plane" viewBox="0 0 24 24" fill="currentColor"><path d="M2,21 L23,12 L2,3 L2,10 L17,12 L2,14 Z"/></svg>
+            <span class="route-dash"></span>
+            <span class="route-dot end"></span>
           </div>
-          <button class="ghost-btn" data-del="${leg.id}">Remove</button>
-        `;
-        listBox.appendChild(row);
+          <div class="route-labels">
+            <span class="route-code">${escapeHtml(leg.fromCode || leg.from || '')}</span>
+            <span class="route-code">${escapeHtml(leg.toCode || leg.to || '')}</span>
+          </div>
+          <div class="item-sub" style="display:flex; justify-content:space-between;">
+            <span>${escapeHtml([leg.fromCity, leg.fromCountry].filter(Boolean).join(', ') || leg.from || '')}</span>
+            <span>${escapeHtml([leg.toCity, leg.toCountry].filter(Boolean).join(', ') || leg.to || '')}</span>
+          </div>
+          <div class="item-meta">
+            ${fmtDate(leg.date)} · Depart ${leg.time || '—'}${leg.arriveTime ? ' · Arrive ' + leg.arriveTime : ''}${leg.confirmation ? ' · Conf: ' + escapeHtml(leg.confirmation) : ''}
+          </div>
+          ${leg.notes ? `<div class="item-notes">${escapeHtml(leg.notes)}</div>` : ''}
+        </div>
+        <button class="ghost-btn" data-del="${leg.id}">Remove</button>
+      `;
+
+      function connectionText(prevLeg, nextLeg){
+        if(!prevLeg.arriveTime) return `Add an arrival time on the ${escapeHtml(prevLeg.toCode || prevLeg.to)} leg to see connection time`;
+        const arriveDt = new Date(`${prevLeg.date}T${prevLeg.arriveTime}:00`);
+        const departDt = new Date(`${nextLeg.date}T${nextLeg.time || '00:00'}:00`);
+        const diffMin = Math.round((departDt - arriveDt) / 60000);
+        if(diffMin < 0) return 'Check times — this connection looks negative';
+        const h = Math.floor(diffMin / 60), m = diffMin % 60;
+        const dur = h > 0 ? `${h}h ${m}m` : `${m}m`;
+        return `${dur} connection in ${escapeHtml(prevLeg.toCode || prevLeg.to || 'transit')}`;
+      }
+
+      // Group legs by journey name; ungrouped legs (no journey) render individually
+      const journeys = {};
+      const singles = [];
+      list.forEach(leg => {
+        if(leg.journey) { journeys[leg.journey] = journeys[leg.journey] || []; journeys[leg.journey].push(leg); }
+        else singles.push(leg);
       });
+
+      // Build ordered blocks by earliest date+time
+      const blocks = [];
+      Object.keys(journeys).forEach(name => {
+        const legs = journeys[name].slice().sort((a,b) => (a.date+a.time).localeCompare(b.date+b.time));
+        blocks.push({ type: 'journey', name, legs, sortKey: legs[0].date + (legs[0].time || '') });
+      });
+      singles.forEach(leg => blocks.push({ type: 'single', leg, sortKey: leg.date + (leg.time || '') }));
+      blocks.sort((a, b) => a.sortKey.localeCompare(b.sortKey));
+
+      blocks.forEach(block => {
+        if(block.type === 'single'){
+          const row = document.createElement('div');
+          row.className = 'item-row';
+          row.innerHTML = legRowHtml(block.leg);
+          listBox.appendChild(row);
+        } else {
+          const wrap = document.createElement('div');
+          wrap.className = 'journey-block';
+          let inner = `<div class="journey-header">${escapeHtml(block.name)}</div>`;
+          block.legs.forEach((leg, i) => {
+            inner += `<div class="item-row">${legRowHtml(leg)}</div>`;
+            if(i < block.legs.length - 1){
+              inner += `<div class="connection-chip">${connectionText(leg, block.legs[i+1])}</div>`;
+            }
+          });
+          wrap.innerHTML = inner;
+          listBox.appendChild(wrap);
+        }
+      });
+
       listBox.querySelectorAll('[data-del]').forEach(btn => {
         btn.addEventListener('click', async () => {
           currentTripData.transport = currentTripData.transport.filter(x => x.id !== btn.dataset.del);
@@ -1646,6 +1830,8 @@
     panel.querySelector('#cancelTransportBtn').addEventListener('click', () => {
       panel.querySelector('#addTransportForm').classList.add('hidden');
     });
+    const existingJourneys = [...new Set(list.map(l => l.journey).filter(Boolean))];
+    panel.querySelector('#journeyOptions').innerHTML = existingJourneys.map(j => `<option value="${escapeHtml(j)}">`).join('');
     panel.querySelector('#t-from').addEventListener('input', e => updateAirportOptions(e.target.value));
     panel.querySelector('#t-to').addEventListener('input', e => updateAirportOptions(e.target.value));
     panel.querySelector('#saveTransportBtn').addEventListener('click', async () => {
@@ -1666,6 +1852,8 @@
         fromCode: fromInfo.code, fromCity: fromInfo.city, fromCountry: fromInfo.country,
         toCode: toInfo.code, toCity: toInfo.city, toCountry: toInfo.country,
         time: panel.querySelector('#t-time').value,
+        arriveTime: panel.querySelector('#t-arrive-time').value,
+        journey: panel.querySelector('#t-journey').value.trim(),
         confirmation: panel.querySelector('#t-conf').value.trim(),
         notes: panel.querySelector('#t-notes').value.trim()
       };
@@ -1814,6 +2002,10 @@
             <input id="p-title" type="text" placeholder="e.g. Belém Tower + pastel de nata stop">
           </div>
           <div class="field full">
+            <label>Address (optional, shows on the Map tab)</label>
+            <input id="p-address" type="text" placeholder="e.g. Praça Afonso de Albuquerque, Lisbon">
+          </div>
+          <div class="field full">
             <label>Notes</label>
             <textarea id="p-notes" rows="2" placeholder="Booking link, meeting point, tips…"></textarea>
           </div>
@@ -1843,6 +2035,7 @@
             <input type="checkbox" ${it.done ? 'checked' : ''} data-toggle="${it.id}">
             <div class="item-main">
               <div class="item-title">${it.time ? `<span class="item-meta">${it.time}</span> ` : ''}${escapeHtml(it.title)}</div>
+              ${it.address ? `<div class="item-sub">${escapeHtml(it.address)}</div>` : ''}
               ${it.notes ? `<div class="item-notes">${escapeHtml(it.notes)}</div>` : ''}
             </div>
             <button class="ghost-btn" data-del="${it.id}">Remove</button>
@@ -1886,6 +2079,7 @@
         date,
         time: panel.querySelector('#p-time').value,
         title,
+        address: panel.querySelector('#p-address').value.trim(),
         notes: panel.querySelector('#p-notes').value.trim(),
         done: false
       };
@@ -2039,7 +2233,6 @@
 </script>
 </body>
 </html>
-
 
 
 
