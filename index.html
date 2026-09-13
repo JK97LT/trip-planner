@@ -456,6 +456,7 @@
     align-items:flex-start;
   }
   .item-main{ flex:1; min-width:0; }
+  .row-actions{ display:flex; flex-direction:column; gap:6px; align-items:flex-end; flex:0 0 auto; }
   .item-title{ font-weight:600; font-size:14.5px; margin-bottom:2px; }
   .item-sub{ font-size:12px; color:var(--muted); text-transform:none; }
   .item-meta{
@@ -776,9 +777,12 @@
 
       <div id="upNextBanner"></div>
 
-      <div style="display:flex; justify-content:space-between; align-items:center; margin:0 0 16px;">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin:0 0 16px; flex-wrap:wrap; gap:10px;">
         <button class="ghost-btn" id="printSummaryBtn" style="color:var(--violet);">Print / save PDF summary</button>
-        <button class="ghost-btn" id="deleteTripBtn">Delete trip</button>
+        <div>
+          <button class="ghost-btn" id="editTripBtn" style="color:var(--gold); margin-right:14px;">Edit trip</button>
+          <button class="ghost-btn" id="deleteTripBtn">Delete trip</button>
+        </div>
       </div>
 
       <nav class="tabs">
@@ -854,6 +858,7 @@
   let trips = [];          // [{id,name,destination,startDate,endDate}]
   let currentTripId = null;
   let currentTripData = null; // {info, transport:[], stays:[], itinerary:[]}
+  let editingTripId = null;
   let activeTab = 'timeline';
 
   const el = id => document.getElementById(id);
@@ -948,6 +953,9 @@
     addStub.className = 'add-trip-stub';
     addStub.textContent = '+ New trip';
     addStub.addEventListener('click', () => {
+      editingTripId = null;
+      el('saveTripBtn').textContent = 'Create trip';
+      el('f-name').value = ''; el('f-start').value = ''; el('f-end').value = '';
       el('addTripForm').classList.remove('hidden');
       resetStopRows();
       el('f-name').focus();
@@ -1541,6 +1549,7 @@
   }
 
   async function renderBudgetPanel(){
+    let editingExpenseId = null;
     const panel = el('panel-budget');
     const expenses = (currentTripData.budget || []).slice().sort((a,b) => (b.date||'').localeCompare(a.date||''));
     const payers = [...new Set(expenses.map(e => e.payer).filter(Boolean))];
@@ -1666,7 +1675,10 @@
           </div>
           <div style="display:flex; flex-direction:column; align-items:flex-end; gap:6px;">
             <div class="item-amount">${parseFloat(e.amount || 0).toFixed(2)} ${escapeHtml(e.currency || SETTLE_CURRENCY)}</div>
-            <button class="ghost-btn" data-del="${e.id}">Remove</button>
+            <div class="row-actions" style="flex-direction:row;">
+              <button class="ghost-btn" data-edit="${e.id}">Edit</button>
+              <button class="ghost-btn" data-del="${e.id}">Remove</button>
+            </div>
           </div>
         `;
         listBox.appendChild(row);
@@ -1678,12 +1690,31 @@
           renderBudgetPanel();
         });
       });
+      listBox.querySelectorAll('[data-edit]').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const exp = currentTripData.budget.find(x => x.id === btn.dataset.edit);
+          if(!exp) return;
+          editingExpenseId = exp.id;
+          panel.querySelector('#e-category').value = exp.category || budgetCategories[0];
+          panel.querySelector('#e-amount').value = exp.amount != null ? exp.amount : '';
+          panel.querySelector('#e-currency').value = exp.currency || SETTLE_CURRENCY;
+          panel.querySelector('#e-payer').value = exp.payer || '';
+          panel.querySelector('#e-desc').value = exp.description || '';
+          panel.querySelector('#e-date').value = exp.date || '';
+          panel.querySelector('#saveExpenseBtn').textContent = 'Update expense';
+          panel.querySelector('#addExpenseForm').classList.remove('hidden');
+          panel.querySelector('#addExpenseForm').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        });
+      });
     }
 
     panel.querySelector('#addExpenseBtn').addEventListener('click', () => {
+      editingExpenseId = null;
+      panel.querySelector('#saveExpenseBtn').textContent = 'Save expense';
       panel.querySelector('#addExpenseForm').classList.remove('hidden');
     });
     panel.querySelector('#cancelExpenseBtn').addEventListener('click', () => {
+      editingExpenseId = null;
       panel.querySelector('#addExpenseForm').classList.add('hidden');
     });
     panel.querySelector('#saveExpenseBtn').addEventListener('click', async () => {
@@ -1693,8 +1724,7 @@
         alert('Please enter a valid amount.');
         return;
       }
-      const expense = {
-        id: uid(),
+      const expenseData = {
         category: panel.querySelector('#e-category').value,
         amount: parseFloat(amount),
         currency: panel.querySelector('#e-currency').value,
@@ -1703,7 +1733,13 @@
         date: panel.querySelector('#e-date').value
       };
       currentTripData.budget = currentTripData.budget || [];
-      currentTripData.budget.push(expense);
+      if(editingExpenseId){
+        const idx = currentTripData.budget.findIndex(x => x.id === editingExpenseId);
+        if(idx !== -1) currentTripData.budget[idx] = { id: editingExpenseId, ...expenseData };
+        editingExpenseId = null;
+      } else {
+        currentTripData.budget.push({ id: uid(), ...expenseData });
+      }
       await saveTripData(currentTripId, currentTripData);
       renderBudgetPanel();
     });
@@ -1712,6 +1748,7 @@
   /* ---------- TRANSPORT ---------- */
   function renderTransportPanel(){
     renderUpNextBanner();
+    let editingLegId = null;
     const panel = el('panel-transport');
     const list = (currentTripData.transport || []).slice().sort((a,b) => (a.date+a.time).localeCompare(b.date+b.time));
     panel.innerHTML = `
@@ -1808,7 +1845,10 @@
           </div>
           ${leg.notes ? `<div class="item-notes">${escapeHtml(leg.notes)}</div>` : ''}
         </div>
-        <button class="ghost-btn" data-del="${leg.id}">Remove</button>
+        <div class="row-actions">
+          <button class="ghost-btn" data-edit="${leg.id}">Edit</button>
+          <button class="ghost-btn" data-del="${leg.id}">Remove</button>
+        </div>
       `;
 
       function connectionText(prevLeg, nextLeg){
@@ -1868,12 +1908,36 @@
           renderTransportPanel();
         });
       });
+      listBox.querySelectorAll('[data-edit]').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const leg = currentTripData.transport.find(x => x.id === btn.dataset.edit);
+          if(!leg) return;
+          editingLegId = leg.id;
+          panel.querySelector('#t-type').value = leg.type || 'Flight';
+          panel.querySelector('#t-carrier').value = leg.carrier || '';
+          panel.querySelector('#t-from').value = leg.fromCode ? `${leg.fromCode} — ${leg.fromCity}, ${leg.fromCountry}` : (leg.from || '');
+          panel.querySelector('#t-to').value = leg.toCode ? `${leg.toCode} — ${leg.toCity}, ${leg.toCountry}` : (leg.to || '');
+          panel.querySelector('#t-date').value = leg.date || '';
+          panel.querySelector('#t-time').value = leg.time || '';
+          panel.querySelector('#t-arrive-time').value = leg.arriveTime || '';
+          panel.querySelector('#t-arrive-date').value = (leg.arriveDate && leg.arriveDate !== leg.date) ? leg.arriveDate : '';
+          panel.querySelector('#t-conf').value = leg.confirmation || '';
+          panel.querySelector('#t-journey').value = leg.journey || '';
+          panel.querySelector('#t-notes').value = leg.notes || '';
+          panel.querySelector('#saveTransportBtn').textContent = 'Update leg';
+          panel.querySelector('#addTransportForm').classList.remove('hidden');
+          panel.querySelector('#addTransportForm').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        });
+      });
     }
 
     panel.querySelector('#addTransportBtn').addEventListener('click', () => {
+      editingLegId = null;
+      panel.querySelector('#saveTransportBtn').textContent = 'Save leg';
       panel.querySelector('#addTransportForm').classList.remove('hidden');
     });
     panel.querySelector('#cancelTransportBtn').addEventListener('click', () => {
+      editingLegId = null;
       panel.querySelector('#addTransportForm').classList.add('hidden');
     });
     const existingJourneys = [...new Set(list.map(l => l.journey).filter(Boolean))];
@@ -1890,8 +1954,7 @@
       }
       const fromInfo = parseAirportEndpoint(fromText);
       const toInfo = parseAirportEndpoint(toText);
-      const leg = {
-        id: uid(),
+      const legData = {
         type: panel.querySelector('#t-type').value,
         carrier: panel.querySelector('#t-carrier').value.trim(),
         from: fromInfo.raw, to: toInfo.raw, date,
@@ -1905,7 +1968,13 @@
         notes: panel.querySelector('#t-notes').value.trim()
       };
       currentTripData.transport = currentTripData.transport || [];
-      currentTripData.transport.push(leg);
+      if(editingLegId){
+        const idx = currentTripData.transport.findIndex(x => x.id === editingLegId);
+        if(idx !== -1) currentTripData.transport[idx] = { id: editingLegId, ...legData };
+        editingLegId = null;
+      } else {
+        currentTripData.transport.push({ id: uid(), ...legData });
+      }
       await saveTripData(currentTripId, currentTripData);
       renderTransportPanel();
     });
@@ -1914,6 +1983,7 @@
   /* ---------- STAYS ---------- */
   function renderStaysPanel(){
     renderUpNextBanner();
+    let editingStayId = null;
     const panel = el('panel-stays');
     const list = (currentTripData.stays || []).slice().sort((a,b) => (a.checkIn||'').localeCompare(b.checkIn||''));
     panel.innerHTML = `
@@ -1973,7 +2043,10 @@
             <div class="item-meta">${fmtDate(stay.checkIn)} → ${fmtDate(stay.checkOut)}${stay.confirmation ? ' · Conf: ' + escapeHtml(stay.confirmation) : ''}${stay.cost ? ' · ' + escapeHtml(stay.cost) : ''}</div>
             ${stay.notes ? `<div class="item-notes">${escapeHtml(stay.notes)}</div>` : ''}
           </div>
-          <button class="ghost-btn" data-del="${stay.id}">Remove</button>
+          <div class="row-actions">
+            <button class="ghost-btn" data-edit="${stay.id}">Edit</button>
+            <button class="ghost-btn" data-del="${stay.id}">Remove</button>
+          </div>
         `;
         listBox.appendChild(row);
       });
@@ -1984,12 +2057,32 @@
           renderStaysPanel();
         });
       });
+      listBox.querySelectorAll('[data-edit]').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const stay = currentTripData.stays.find(x => x.id === btn.dataset.edit);
+          if(!stay) return;
+          editingStayId = stay.id;
+          panel.querySelector('#s-name').value = stay.name || '';
+          panel.querySelector('#s-address').value = stay.address || '';
+          panel.querySelector('#s-checkin').value = stay.checkIn || '';
+          panel.querySelector('#s-checkout').value = stay.checkOut || '';
+          panel.querySelector('#s-conf').value = stay.confirmation || '';
+          panel.querySelector('#s-cost').value = stay.cost || '';
+          panel.querySelector('#s-notes').value = stay.notes || '';
+          panel.querySelector('#saveStayBtn').textContent = 'Update stay';
+          panel.querySelector('#addStayForm').classList.remove('hidden');
+          panel.querySelector('#addStayForm').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        });
+      });
     }
 
     panel.querySelector('#addStayBtn').addEventListener('click', () => {
+      editingStayId = null;
+      panel.querySelector('#saveStayBtn').textContent = 'Save stay';
       panel.querySelector('#addStayForm').classList.remove('hidden');
     });
     panel.querySelector('#cancelStayBtn').addEventListener('click', () => {
+      editingStayId = null;
       panel.querySelector('#addStayForm').classList.add('hidden');
     });
     panel.querySelector('#saveStayBtn').addEventListener('click', async () => {
@@ -2000,8 +2093,7 @@
         alert('Please fill in at least the name, check-in and check-out dates.');
         return;
       }
-      const stay = {
-        id: uid(),
+      const stayData = {
         name,
         address: panel.querySelector('#s-address').value.trim(),
         checkIn, checkOut,
@@ -2010,7 +2102,14 @@
         notes: panel.querySelector('#s-notes').value.trim()
       };
       currentTripData.stays = currentTripData.stays || [];
-      currentTripData.stays.push(stay);
+      if(editingStayId){
+        const idx = currentTripData.stays.findIndex(x => x.id === editingStayId);
+        const existing = idx !== -1 ? currentTripData.stays[idx] : {};
+        if(idx !== -1) currentTripData.stays[idx] = { id: editingStayId, lat: existing.lat, lng: existing.lng, ...stayData };
+        editingStayId = null;
+      } else {
+        currentTripData.stays.push({ id: uid(), ...stayData });
+      }
       await saveTripData(currentTripId, currentTripData);
       renderStaysPanel();
     });
@@ -2019,6 +2118,7 @@
   /* ---------- PLAN / ITINERARY ---------- */
   function renderPlanPanel(){
     renderUpNextBanner();
+    let editingItemId = null;
     const panel = el('panel-plan');
     const items = (currentTripData.itinerary || []).slice();
     const byDay = {};
@@ -2085,7 +2185,10 @@
               ${it.address ? `<div class="item-sub">${escapeHtml(it.address)}</div>` : ''}
               ${it.notes ? `<div class="item-notes">${escapeHtml(it.notes)}</div>` : ''}
             </div>
-            <button class="ghost-btn" data-del="${it.id}">Remove</button>
+            <div class="row-actions">
+              <button class="ghost-btn" data-edit="${it.id}">Edit</button>
+              <button class="ghost-btn" data-del="${it.id}">Remove</button>
+            </div>
           `;
           group.appendChild(row);
         });
@@ -2106,12 +2209,30 @@
           renderPlanPanel();
         });
       });
+      listBox.querySelectorAll('[data-edit]').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const item = currentTripData.itinerary.find(x => x.id === btn.dataset.edit);
+          if(!item) return;
+          editingItemId = item.id;
+          panel.querySelector('#p-date').value = item.date || '';
+          panel.querySelector('#p-time').value = item.time || '';
+          panel.querySelector('#p-title').value = item.title || '';
+          panel.querySelector('#p-address').value = item.address || '';
+          panel.querySelector('#p-notes').value = item.notes || '';
+          panel.querySelector('#savePlanBtn').textContent = 'Update item';
+          panel.querySelector('#addPlanForm').classList.remove('hidden');
+          panel.querySelector('#addPlanForm').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        });
+      });
     }
 
     panel.querySelector('#addPlanBtn').addEventListener('click', () => {
+      editingItemId = null;
+      panel.querySelector('#savePlanBtn').textContent = 'Add to plan';
       panel.querySelector('#addPlanForm').classList.remove('hidden');
     });
     panel.querySelector('#cancelPlanBtn').addEventListener('click', () => {
+      editingItemId = null;
       panel.querySelector('#addPlanForm').classList.add('hidden');
     });
     panel.querySelector('#savePlanBtn').addEventListener('click', async () => {
@@ -2121,17 +2242,22 @@
         alert('Please fill in at least what it is and the date.');
         return;
       }
-      const item = {
-        id: uid(),
+      const itemData = {
         date,
         time: panel.querySelector('#p-time').value,
         title,
         address: panel.querySelector('#p-address').value.trim(),
-        notes: panel.querySelector('#p-notes').value.trim(),
-        done: false
+        notes: panel.querySelector('#p-notes').value.trim()
       };
       currentTripData.itinerary = currentTripData.itinerary || [];
-      currentTripData.itinerary.push(item);
+      if(editingItemId){
+        const idx = currentTripData.itinerary.findIndex(x => x.id === editingItemId);
+        const existing = idx !== -1 ? currentTripData.itinerary[idx] : {};
+        if(idx !== -1) currentTripData.itinerary[idx] = { id: editingItemId, done: existing.done || false, lat: existing.lat, lng: existing.lng, ...itemData };
+        editingItemId = null;
+      } else {
+        currentTripData.itinerary.push({ id: uid(), done: false, ...itemData });
+      }
       await saveTripData(currentTripId, currentTripData);
       renderPlanPanel();
     });
@@ -2166,6 +2292,7 @@
   el('addStopBtn').addEventListener('click', () => addStopRow());
 
   el('cancelTripBtn').addEventListener('click', () => {
+    editingTripId = null;
     el('addTripForm').classList.add('hidden');
   });
 
@@ -2183,6 +2310,28 @@
       return;
     }
     const destination = buildDestinationSummary(stops);
+
+    if(editingTripId){
+      const idx = trips.findIndex(t => t.id === editingTripId);
+      if(idx !== -1){
+        const updatedTrip = { id: editingTripId, name, stops, city: stops[0].city, country: stops[0].country, destination, startDate, endDate };
+        trips[idx] = updatedTrip;
+        await saveTripsIndex();
+        if(currentTripId === editingTripId){
+          currentTripData.info = updatedTrip;
+          await saveTripData(editingTripId, currentTripData);
+        }
+      }
+      editingTripId = null;
+      el('saveTripBtn').textContent = 'Create trip';
+      el('f-name').value = ''; el('f-start').value=''; el('f-end').value='';
+      resetStopRows();
+      el('addTripForm').classList.add('hidden');
+      renderTripSwitcher();
+      if(currentTripId) await selectTrip(currentTripId);
+      return;
+    }
+
     const trip = { id: uid(), name, stops, city: stops[0].city, country: stops[0].country, destination, startDate, endDate };
     trips.push(trip);
     await saveTripsIndex();
@@ -2193,6 +2342,23 @@
     el('emptyState').classList.add('hidden');
     renderTripSwitcher();
     await selectTrip(trip.id);
+  });
+
+  el('editTripBtn').addEventListener('click', () => {
+    if(!currentTripId) return;
+    const trip = trips.find(t => t.id === currentTripId);
+    if(!trip) return;
+    editingTripId = trip.id;
+    el('f-name').value = trip.name || '';
+    el('f-start').value = trip.startDate || '';
+    el('f-end').value = trip.endDate || '';
+    const stops = getTripStops(trip);
+    el('destStopsContainer').innerHTML = '';
+    if(stops.length === 0) addStopRow();
+    else stops.forEach(s => addStopRow(s.city, s.country));
+    el('saveTripBtn').textContent = 'Update trip';
+    el('addTripForm').classList.remove('hidden');
+    el('addTripForm').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
   });
 
   el('deleteTripBtn').addEventListener('click', async () => {
@@ -2280,5 +2446,4 @@
 </script>
 </body>
 </html>
-
 
